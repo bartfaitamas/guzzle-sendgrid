@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+    <php>
+        <server name="API_USER" value="change_me" />
+        <server name="API_PASSWORD" value="****" />
+    </php>
+    <testsuites>
+        <testsuite name="guzzle/guzzle-sendgrid">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./tests</directory>
+                <directory>./docs</directory>
+                <directory>./coverage</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

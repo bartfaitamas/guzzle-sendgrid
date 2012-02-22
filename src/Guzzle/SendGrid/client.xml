@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<client>
+  <commands>
+    <command name="abstract.event_list.command"
+             method="GET"
+             class="Guzzle\SendGrid\Command\SendGridCommand">
+      <param name="date" static="1" location="query" doc="Retrieve the timestamp of the bounce records. It will return a date in a MySQL timestamp format – YYYY-MM-DD HH:MM:SS" />
+      <param name="days" type="integer" location="query" doc="Number of days in the past for which to retrieve bounces (includes today) " />
+      <param name="start_date"
+             type="date"
+             location="query"
+             filters="Guzzle\SendGrid\Command\SendGridCommand::dateFormat"
+             doc="The start of the date range for which to retrieve bounces. " />
+      <param name="end_date"
+             type="date"
+             location="query"
+             filters="Guzzle\SendGrid\Command\SendGridCommand::dateFormat"
+             doc="The end of the date range for which to retrieve bounces." />
+      <param name="limit" type="integer" location="query" doc="Optional field to limit the number of results returned." />
+      <param name="offset" type="integer" location="query" doc="optional beginning point in the list to retrieve from." />
+      <param name="email" type="string" location="query" doc="optional email addresses to search for." />
+    </command>
+
+    <command name="abstract.event_delete.command"
+             method="POST"
+             class="Guzzle\SendGrid\Command\SendGridPostCommand">
+      <param name="start_date"
+             type="date"
+             filters="Guzzle\SendGrid\Command\SendGridCommand::dateFormat"
+             location="query"
+             doc="The start of the date range for which to retrieve bounces. " />
+      <param name="end_date"
+             type="date"
+             filters="Guzzle\SendGrid\Command\SendGridCommand::dateFormat"
+             location="query"
+             doc="The end of the date range for which to retrieve bounces." />
+      <param name="email" type="string" location="query" doc="optional email addresses to search for." />
+    </command>
+
+    <command name="abstract.event_count.command"
+             method="GET"
+             class="Guzzle\SendGrid\Command\SendGridCommand">
+      <param name="start_date" type="date" location="query" doc="Optional date to start counting from." />
+      <param name="end_date" type="date" location="query" doc="Optional date to end counting from." />
+    </command>
+
+    <!-- =================================================================== -->
+    <!--bounces-->
+    <!-- =================================================================== -->
+    <command name="bounces.get"
+             extends="abstract.event_list.command"
+             uri="bounces.get.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve a list of bounces with addresses and response codes, optionally with dates.</doc>
+      <param name="type" type="enum:hard,soft" location="query" doc="choose the type of bounce to search for." />
+    </command>
+    
+    <command name="bounces.delete"
+             extends="abstract.event_delete.command"
+             uri="bounces.delete.json?api_user={username}&amp;api_key={password}">
+      <doc>Delete an address from the Bounce list. Please note that if no parameters are specified the ENTIRE list will be deleted.</doc>
+      <param name="type" type="enum:hard,soft" location="query" doc="choose the type of bounce to search for." />
+    </command>
+    
+    <command name="bounces.count"
+             extends="abstract.event_count.command"
+             uri="bounces.count.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve the number of bounces</doc>
+      <param name="type" type="enum:hard,soft" location="query" doc="choose the type of bounce to search for." />
+    </command>
+
+    <!-- =================================================================== -->
+    <!--blocks-->
+    <!-- =================================================================== -->
+    <command name="blocks.get"
+             extends="abstract.event_list.command"
+             uri="blocks.get.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve a list of Blocks with addresses and response codes, optionally with dates.</doc>
+    </command>
+
+    <command name="blocks.delete"
+             method="POST"
+             class="Guzzle\SendGrid\Command\SendGridPostCommand"
+             uri="bounces.delete.json?api_user={username}&amp;api_key={password}">
+      <doc>Delete an address from the Block list.</doc>
+      <param name="email" type="string" required="true" location="query" doc="Email block address to remove." />
+    </command>
+
+    <!-- =================================================================== -->
+    <!--invalid emails-->
+    <!-- =================================================================== -->
+    <command name="invalidemails.get"
+             extends="abstract.event_list.command"
+             uri="invalidemails.get.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve a list of invalid emails with addresses and response codes, optionally with dates.</doc>
+    </command>
+
+    <command name="invalidemails.delete"
+             extends="abstract.event_delete.command"
+             uri="invalidemails.delete.json?api_user={username}&amp;api_key={password}">
+      <doc>Delete an address from the Invalid Email list. Please note that if no parameters are specified the ENTIRE list will be deleted.</doc>
+    </command>
+    
+    <command name="invalidemails.count"
+             extends="abstract.event_count.command"
+             uri="invalidemails.count.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve the number of invalid emails</doc>
+    </command>
+
+    <!-- =================================================================== -->
+    <!--spam reports-->
+    <!-- =================================================================== -->
+    <command name="spamreports.get"
+             extends="abstract.event_list.command"
+             uri="spamreports.get.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve a list of spam reports with addresses and response codes, optionally with dates.</doc>
+    </command>
+
+    <command name="spamreports.delete"
+             extends="abstract.event_delete.command"
+             uri="spamreports.delete.json?api_user={username}&amp;api_key={password}">
+      <doc>Delete an address from the Spam Reports list.</doc>
+      <param name="email" type="string" required="true" location="query" doc="Email spam reports address to remove." />
+    </command>
+
+    <!-- =================================================================== -->
+    <!--spam reports-->
+    <!-- =================================================================== -->
+    <command name="stats.get"
+             method="GET"
+             class="Guzzle\SendGrid\Command\SendGridCommand"
+             uri="stats.get.json?api_user={username}&amp;api_key={password}">
+      <doc>Retrieve Statistics NOTE: You can use the days parameter or the start_date and end_date parameter. If provided with no parameters the current day’s statistics are returned instead.</doc>
+      <param name="days" type="integer" location="query" doc="Number of days in the past to include statistics (includes today) " />
+      <param name="start_date"
+             type="date"
+             location="query"
+             filters="Guzzle\SendGrid\Command\SendGridCommand::dateFormat"
+             doc="The start date to look up statistics." />
+      <param name="end_date"
+             type="date"
+             location="query"
+             filters="Guzzle\SendGrid\Command\SendGridCommand::dateFormat"
+             doc="The end date to look up statistics." />
+    </command>
+
+
+  </commands>
+</client>
